@@ -976,3 +976,43 @@ input:invalid {
     color: #495057;
     font-weight: 500;
 }
+
+/* Login Modal Styles */
+#loginModal .modal-content {
+    max-width: 400px;
+    padding: 2rem;
+}
+
+#loginModal h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+}
+
+#loginModal .form-group {
+    margin-bottom: 1.2rem;
+}
+
+#loginModal input {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+#loginModal input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+}
+
+#loginModal .button-row {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+#loginModal .btn {
+    min-width: 120px;
+}

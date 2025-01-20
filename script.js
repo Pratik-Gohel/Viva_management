@@ -1,4 +1,42 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Show login modal on page load if not already logged in
+    if (!sessionStorage.getItem('isLoggedIn')) {
+        const loginModal = document.getElementById('loginModal');
+        loginModal.style.display = 'block';
+    }
+
+    // Handle login form submission
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', async function(event) {
+        event.preventDefault();
+        
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                sessionStorage.setItem('isLoggedIn', 'true');
+                document.getElementById('loginModal').style.display = 'none';
+                showToast('Login successful', 'success');
+            } else {
+                showToast('Invalid credentials', 'error');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            showToast('Login failed', 'error');
+        }
+    });
+
     const form = document.getElementById('vivaForm');
     const examNameInput = document.getElementById('examName');
     const examDateInput = document.getElementById('examDate');
