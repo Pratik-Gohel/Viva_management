@@ -12,88 +12,98 @@
     <div class="container">
         <div class="header-nav">
             <h1>Viva Daily Sheet</h1>
-            <a href="index.html" class="nav-link">
-                <i class="fas fa-arrow-left"></i> Back to Form
-            </a>
+            <nav>
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i> Back to Form
+                </a>
+            </nav>
         </div>
 
         <div class="filter-section">
-            <div class="filter-group">
-                <label for="examNameFilter">Exam Name:</label>
-                <select id="examNameFilter" required>
-                    <option value="">Select Exam Name</option>
-                </select>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="examNameFilter">Exam Name:</label>
+                    <select id="examNameFilter" required>
+                        <option value="">Select Exam Name</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="branchFilter">Branch:</label>
+                    <select id="branchFilter" required disabled>
+                        <option value="">Select Branch</option>
+                        <option value="ALL">All Branches</option>
+                        <option value="EC">EC</option>
+                        <option value="IT">IT</option>
+                        <option value="CE">CE</option>
+                        <option value="MECH">MECH</option>
+                        <option value="CIVIL">CIVIL</option>
+                        <option value="ICT">ICT</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="filter-group">
-                <label for="branchFilter">Branch:</label>
-                <select id="branchFilter" required disabled>
-                    <option value="">Select Branch</option>
-                    <option value="ALL">All Branches</option>
-                    <option value="EC">EC</option>
-                    <option value="IT">IT</option>
-                    <option value="CE">CE</option>
-                    <option value="MECH">MECH</option>
-                    <option value="CIVIL">CIVIL</option>
-                    <option value="ICT">ICT</option>
-                </select>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="examDateFilter">Date:</label>
+                    <select id="examDateFilter" required disabled>
+                        <option value="">Select Date</option>
+                        <option value="ALL">All Dates</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="examinerTypeFilter">Examiner Type:</label>
+                    <select id="examinerTypeFilter" required disabled>
+                        <option value="">Select Type</option>
+                        <option value="ALL">All Types</option>
+                        <option value="External">External</option>
+                        <option value="Internal">Internal</option>
+                        <option value="Lab Assistant">Lab Assistant</option>
+                        <option value="Peon">Peon</option>
+                    </select>
+                </div>
             </div>
 
-            <div class="filter-group">
-                <label for="examDateFilter">Date:</label>
-                <select id="examDateFilter" required disabled>
-                    <option value="">Select Date</option>
-                    <option value="ALL">All Dates</option>
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="examinerTypeFilter">Examiner Type:</label>
-                <select id="examinerTypeFilter" required disabled>
-                    <option value="">Select Type</option>
-                    <option value="ALL">All Types</option>
-                    <option value="External">External</option>
-                    <option value="Internal">Internal</option>
-                    <option value="Lab Assistant">Lab Assistant</option>
-                    <option value="Peon">Peon</option>
-                </select>
-            </div>
-
-            <div class="filter-actions">
-                <button id="applyFilters" class="primary-button" disabled>
+            <div class="button-row">
+                <button id="applyFilters" class="btn primary" disabled>
                     <i class="fas fa-filter"></i> Apply Filters
                 </button>
-                <button id="exportExcel" class="secondary-button" disabled>
+                <button id="exportExcel" class="btn secondary" disabled>
                     <i class="fas fa-file-excel"></i> Export to Excel
                 </button>
             </div>
         </div>
 
-        <div class="data-section">
-            <div class="loading-message" style="display: none;">
-                <i class="fas fa-spinner fa-spin"></i> Loading data...
+        <div id="resultSection" class="result-section">
+            <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading...</span>
             </div>
-            <div class="error-message" style="display: none;"></div>
-            <div class="no-data-message" style="display: none;">No data found</div>
-            
-            <table id="dataTable" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Branch</th>
-                        <th>Sem</th>
-                        <th>Examiner Type</th>
-                        <th>Date</th>
-                        <th>Subject Code</th>
-                        <th>Person Name</th>
-                        <th>TA Amount</th>
-                        <th>DA Amount</th>
-                        <th>Honorarium</th>
-                        <th>Total Amount</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+            <div id="noDataMessage" class="no-data-message" style="display: none;">
+                <i class="fas fa-info-circle"></i>
+                No data found for the selected filters
+            </div>
+            <div class="data-table">
+                <table id="dataTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>Branch</th>
+                            <th>Sem</th>
+                            <th>Examiner Type</th>
+                            <th>Date</th>
+                            <th>Subject Code</th>
+                            <th>Person Name</th>
+                            <th>TA Amount</th>
+                            <th>DA Amount</th>
+                            <th>Honorarium</th>
+                            <th>Total Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
