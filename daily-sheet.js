@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function initializeExamNames() {
         try {
             showLoading();
-            const response = await fetch('http://localhost:3000/api/exam-names');
+            const response = await fetch('/api/exam-names');
             if (!response.ok) throw new Error('Failed to fetch exam names');
             
             const examNames = await response.json();
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!examName) return;
 
-            const response = await fetch(`http://localhost:3000/api/branches/${encodeURIComponent(examName)}`);
+            const response = await fetch(`/api/branches/${encodeURIComponent(examName)}`);
             if (!response.ok) throw new Error('Failed to fetch branches');
             
             const branches = await response.json();
@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!examName || !branch) return;
 
-            const response = await fetch(`http://localhost:3000/api/dates/${encodeURIComponent(examName)}/${encodeURIComponent(branch)}`);
+            const response = await fetch(`/api/dates/${encodeURIComponent(examName)}/${encodeURIComponent(branch)}`);
             if (!response.ok) throw new Error('Failed to fetch dates');
             
             const dates = await response.json();
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!examName || !branch || !date) return;
 
-            const response = await fetch(`http://localhost:3000/api/examiner-types/${encodeURIComponent(examName)}/${encodeURIComponent(branch)}/${encodeURIComponent(date)}`);
+            const response = await fetch(`/api/examiner-types/${encodeURIComponent(examName)}/${encodeURIComponent(branch)}/${encodeURIComponent(date)}`);
             if (!response.ok) throw new Error('Failed to fetch examiner types');
             
             const types = await response.json();
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
             };
 
             const queryString = new URLSearchParams(filters).toString();
-            const response = await fetch(`http://localhost:3000/api/daily-sheet?${queryString}`);
+            const response = await fetch(`/api/daily-sheet?${queryString}`);
             
             if (!response.ok) {
                 const error = await response.json();
