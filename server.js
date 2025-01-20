@@ -24,8 +24,14 @@ app.get('/', (req, res) => {
 
 // MongoDB Connection with retry logic
 async function connectToMongoDB() {
+    const mongoURI = process.env.MONGODB_URI;
+    if (!mongoURI) {
+        console.error('MONGODB_URI environment variable is not set!');
+        process.exit(1); // Exit the process if MongoDB URI is not set
+    }
+
     try {
-        await mongoose.connect(process.env.MONGODB_URI, {
+        await mongoose.connect(mongoURI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             serverSelectionTimeoutMS: 5000,
