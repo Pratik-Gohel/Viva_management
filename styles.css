@@ -170,6 +170,9 @@ button[type="reset"]:hover {
     font-size: 24px;
     font-weight: bold;
     cursor: pointer;
+    z-index: 1010;
+    padding: 5px;
+    line-height: 1;
 }
 
 .close:hover {
@@ -656,17 +659,19 @@ tr:hover {
 /* Toast Notifications */
 .toast {
     position: fixed;
-    bottom: 20px;
     right: 20px;
-    padding: 1rem 1.5rem;
+    top: 20px;
+    padding: 12px 24px;
     border-radius: 4px;
+    background: #333;
     color: white;
-    font-weight: 500;
     opacity: 0;
-    transform: translateY(100%);
+    transform: translateY(-100%);
     transition: all 0.3s ease;
-    z-index: 1000;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 1100;
+    max-width: 300px;
+    display: inline-block;
+    white-space: nowrap;
 }
 
 .toast.show {
@@ -842,20 +847,19 @@ tr:hover {
     gap: 10px;
 }
 
-.btn.danger {
-    background-color: #dc3545;
-    color: white;
+.btn.delete-bank {
+    padding: 6px 12px;
+    font-size: 0.9rem;
 }
 
-.btn.danger:hover {
-    background-color: #c82333;
+.btn.delete-bank:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
-.no-data {
-    text-align: center;
-    padding: 20px;
-    color: #6c757d;
-    font-style: italic;
+/* Toast position adjustment */
+.toast {
+    z-index: 1100;
 }
 
 /* Confirmation Modal */
@@ -971,19 +975,4 @@ input:invalid {
     margin-bottom: 5px;
     color: #495057;
     font-weight: 500;
-}
-
-.btn.delete-bank {
-    padding: 6px 12px;
-    font-size: 0.9rem;
-}
-
-.btn.delete-bank:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Toast position adjustment */
-.toast {
-    z-index: 1100;
 }

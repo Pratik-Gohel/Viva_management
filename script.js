@@ -501,10 +501,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Close button functionality for examiner modal
+    const closeButtons = document.querySelectorAll('.close');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const modal = this.closest('.modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        });
+    });
+
     // Close modal when clicking outside
-    window.addEventListener('click', (event) => {
-        if (event.target === examinerModal) {
-            examinerModal.style.display = 'none';
+    window.addEventListener('click', function(event) {
+        if (event.target.classList.contains('modal')) {
+            event.target.style.display = 'none';
         }
     });
 
