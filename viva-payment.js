@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize exam names
     async function loadExamNames() {
         try {
-            const response = await fetch('http://localhost:3000/api/examination-details/exam-names');
+            const response = await fetch('/api/examination-details/exam-names');
             const data = await response.json();
             
             examNameSelect.innerHTML = '<option value="">Select Exam Name</option>';
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load branches based on exam name
     async function loadBranches(examName) {
         try {
-            const response = await fetch(`http://localhost:3000/api/examination-details/branches?examName=${encodeURIComponent(examName)}`);
+            const response = await fetch(`/api/examination-details/branches?examName=${encodeURIComponent(examName)}`);
             const data = await response.json();
             
             branchSelect.innerHTML = '<option value="">Select Branch</option><option value="all">All Branches</option>';
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load dates based on exam name and branch
     async function loadDates(examName, branch) {
         try {
-            const url = `http://localhost:3000/api/examination-details/dates?examName=${encodeURIComponent(examName)}${branch !== 'all' ? `&branch=${encodeURIComponent(branch)}` : ''}`;
+            const url = `/api/examination-details/dates?examName=${encodeURIComponent(examName)}${branch !== 'all' ? `&branch=${encodeURIComponent(branch)}` : ''}`;
             const response = await fetch(url);
             const data = await response.json();
             
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load examiner types based on exam name, branch, and date
     async function loadExaminerTypes(examName, branch, date) {
         try {
-            const url = `http://localhost:3000/api/examination-details/examiner-types?examName=${encodeURIComponent(examName)}${branch !== 'all' ? `&branch=${encodeURIComponent(branch)}` : ''}${date !== 'all' ? `&date=${encodeURIComponent(date)}` : ''}`;
+            const url = `/api/examination-details/examiner-types?examName=${encodeURIComponent(examName)}${branch !== 'all' ? `&branch=${encodeURIComponent(branch)}` : ''}${date !== 'all' ? `&date=${encodeURIComponent(date)}` : ''}`;
             const response = await fetch(url);
             const data = await response.json();
             
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
         exportExcelBtn.disabled = true;
 
         try {
-            const url = `http://localhost:3000/api/examination-details/filter?examName=${encodeURIComponent(examName)}${branch !== 'all' ? `&branch=${encodeURIComponent(branch)}` : ''}${date !== 'all' ? `&date=${encodeURIComponent(date)}` : ''}${examinerType !== 'all' ? `&examinerType=${encodeURIComponent(examinerType)}` : ''}`;
+            const url = `/api/examination-details/filter?examName=${encodeURIComponent(examName)}${branch !== 'all' ? `&branch=${encodeURIComponent(branch)}` : ''}${date !== 'all' ? `&date=${encodeURIComponent(date)}` : ''}${examinerType !== 'all' ? `&examinerType=${encodeURIComponent(examinerType)}` : ''}`;
             const response = await fetch(url);
             const data = await response.json();
 
