@@ -8,12 +8,10 @@ const ExaminationDetails = require('./models/ExaminationDetails');
 const BankDetails = require('./models/BankDetails');
 
 const app = express();
+const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 
 // Serve static files from the root directory
@@ -27,10 +25,10 @@ app.get('/', (req, res) => {
 // MongoDB Connection with retry logic
 async function connectToMongoDB() {
     try {
-        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/Viva_Exam_details', {
+        await mongoose.connect(process.env.MONGODB_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 5000, // Timeout after 5s instead of 30s
+            serverSelectionTimeoutMS: 5000,
             retryWrites: true
         });
         console.log('MongoDB connected successfully');
@@ -816,16 +814,7 @@ app.delete('/api/bank-details/:id', async (req, res) => {
     }
 });
 
-const PORT = process.env.PORT || 3000;
-const server = app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
-
-// Handle server errors
-server.on('error', (error) => {
-    console.error('Server error:', error);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+// Start server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });

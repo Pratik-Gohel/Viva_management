@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             showLoadingInList();
             
-            const url = `http://localhost:3000/api/examiner-details?branch=${encodeURIComponent(branch)}&examinerType=${encodeURIComponent(examinerType)}`;
+            const url = `/api/examiner-details?branch=${encodeURIComponent(branch)}&examinerType=${encodeURIComponent(examinerType)}`;
             console.log('Fetching from URL:', url);
             
             const response = await fetch(url);
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         ...currentBankDetails
                     };
 
-                    const bankResponse = await fetch('http://localhost:3000/api/bank-details', {
+                    const bankResponse = await fetch('/api/bank-details', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(bankData)
@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     ifscCode: ifscCodeInput.value.toUpperCase()
                 };
 
-                const bankResponse = await fetch('http://localhost:3000/api/bank-details', {
+                const bankResponse = await fetch('/api/bank-details', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(bankData)
@@ -389,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 formData.panCard = panCardInput.value.trim().toUpperCase();
             }
 
-            const examResponse = await fetch('http://localhost:3000/api/examination-details', {
+            const examResponse = await fetch('/api/examination-details', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
