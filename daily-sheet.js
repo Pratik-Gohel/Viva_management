@@ -9,9 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Table elements
     const dataTable = document.getElementById('dataTable');
-    const loadingMessage = document.querySelector('.loading-message');
-    const errorMessage = document.querySelector('.error-message');
-    const noDataMessage = document.querySelector('.no-data-message');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const errorMessage = document.getElementById('errorMessage');
+    const noDataMessage = document.getElementById('noDataMessage');
 
     let currentData = [];
 
@@ -249,18 +249,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Helper functions
     function showLoading() {
-        loadingMessage.style.display = 'block';
+        loadingSpinner.style.display = 'block';
         dataTable.style.display = 'none';
         errorMessage.style.display = 'none';
         noDataMessage.style.display = 'none';
     }
 
     function hideLoading() {
-        loadingMessage.style.display = 'none';
+        loadingSpinner.style.display = 'none';
     }
 
     function showError(message) {
-        errorMessage.textContent = message;
+        const errorSpan = errorMessage.querySelector('span');
+        if (errorSpan) {
+            errorSpan.textContent = message;
+        }
         errorMessage.style.display = 'block';
         dataTable.style.display = 'none';
         hideLoading();
@@ -269,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function showNoData() {
         noDataMessage.style.display = 'block';
         dataTable.style.display = 'none';
+        hideLoading();
     }
 
     function formatDate(dateString) {
