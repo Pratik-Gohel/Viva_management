@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viva Payment Details</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="college-header">
+            <h1>Government Engineering College Bhavnagar</h1>
+        </div>
+        <div class="header-nav">
+            <h1>Viva Payment Details</h1>
+            <nav>
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-home"></i> Back to Form
+                </a>
+            </nav>
+        </div>
+
+        <div class="filter-section">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="examName">Exam Name:</label>
+                    <select id="examName" required>
+                        <option value="">Select Exam Name</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="branch">Branch:</label>
+                    <select id="branch" required disabled>
+                        <option value="">Select Branch</option>
+                        <option value="ALL">All Branches</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="examDate">Date:</label>
+                    <select id="examDate" required disabled>
+                        <option value="">Select Date</option>
+                        <option value="ALL">All Dates</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="examinerType">Examiner Type:</label>
+                    <select id="examinerType" required disabled>
+                        <option value="">Select Type</option>
+                        <option value="ALL">All Types</option>
+                        <option value="External">External</option>
+                        <option value="Internal">Internal</option>
+                        <option value="Lab Assistant">Lab Assistant</option>
+                        <option value="Peon">Peon</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="button-row">
+                <button id="applyFilter" class="btn primary" disabled>
+                    <i class="fas fa-filter"></i> Apply Filters
+                </button>
+                <button id="exportExcel" class="btn secondary" disabled>
+                    <i class="fas fa-file-excel"></i> Export to Excel
+                </button>
+            </div>
+        </div>
+
+        <div id="resultSection" class="result-section">
+            <div id="loadingSpinner" class="loading-spinner" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i>
+                <span>Loading...</span>
+            </div>
+            <div id="errorMessage" class="error-message" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <span></span>
+            </div>
+            <div id="noDataMessage" class="no-data-message" style="display: none;">
+                <i class="fas fa-info-circle"></i>
+                No data found for the selected filters
+            </div>
+            <div class="data-table">
+                <table id="dataTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Sr. No.</th>
+                            <th>Amount</th>
+                            <th>IFSC Code</th>
+                            <th>Account No</th>
+                            <th>---</th>
+                            <th>Examiner Name</th>
+                            <th>Location</th>
+                            <th>Payment Mode</th>
+                            <th>College</th>
+                            <th>Examiner Type</th>
+                            <th>Total Records</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="viva-payment.js"></script>
+</body>
+</html>
