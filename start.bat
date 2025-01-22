@@ -1,6 +1,0 @@
-@echo off
-echo Installing dependencies...
-npm install express mongoose cors dotenv
-
-echo Starting the server...
-node server.js
