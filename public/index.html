@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viva Examination Details</title>
+    <link rel="stylesheet" href="./styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <!-- Login Modal -->
+<div id="loginModal" class="modal">
+    <div class="modal-content">
+        <h2>Login Required</h2>
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" required>
+            </div>
+            <div class="button-row">
+                <button type="submit" class="btn primary">Login</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <div class="container">
+        <div class="header-nav">
+            <h1>Viva Examination Details</h1>
+            <nav>
+                <a href="daily-sheet.html" class="nav-link">
+                    <i class="fas fa-table"></i> View Daily Sheet
+                </a>
+                <a href="viva-payment.html" class="nav-link">
+                    <i class="fas fa-money-bill"></i> Viva Payment Details
+                </a>
+                <!-- <a href="update-examiner.html" class="nav-link">
+                    <i class="fas fa-user-edit"></i> Update Examiner Details
+                </a> -->
+            </nav>
+        </div>
+        <form id="vivaForm">
+            <div class="form-section">
+                <h2>Examination Details</h2>
+                <div class="form-group">
+                    <label for="examName">Exam Name:</label>
+                    <div class="input-with-icon">
+                        <input type="text" id="examName" readonly>
+                        <i class="fas fa-edit edit-icon" id="editExamName"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="branch">Branch:</label>
+                    <select id="branch" name="branch" required>
+                        <option value="">Select Branch</option>
+                        <option value="EC">EC</option>
+                        <option value="IT">IT</option>
+                        <option value="CE">CE</option>
+                        <option value="MECH">MECH</option>
+                        <option value="CIVIL">CIVIL</option>
+                        <option value="ICT">ICT</option>
+                    </select>
+
+                    <label for="branchCode">Branch Code:</label>
+                    <select id="branchCode" name="branchCode" required>
+                        <option value="">Select Branch Code</option>
+                        <option value="11">11</option>
+                        <option value="16">16</option>
+                        <option value="07">07</option>
+                        <option value="19">19</option>
+                        <option value="06">06</option>
+                        <option value="32">32</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="semester">Semester:</label>
+                    <select id="semester" name="semester" required>
+                        <option value="">Select Semester</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                    </select>
+
+                    <label for="subjectCode">Subject Code:</label>
+                    <input type="text" id="subjectCode" name="subjectCode" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="examDate">Exam Date:</label>
+                    <input type="date" id="examDate" name="examDate" required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Examiner Details</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="examinerType">Examiner Type:</label>
+                        <select id="examinerType" name="examinerType" required>
+                            <option value="">Select Type</option>
+                            <option value="External">External</option>
+                            <option value="Internal">Internal</option>
+                            <option value="Lab Assistant">Lab Assistant</option>
+                            <option value="Peon">Peon</option>
+                        </select>
+                        <span class="validation-warning" id="examinerTypeWarning"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="examinerName">Examiner Name:</label>
+                        <div class="input-with-icon">
+                            <input type="text" id="examinerName" name="examinerName" required>
+                            <button type="button" id="loadExaminerDetails" class="icon-button" title="Load Existing Examiner">
+                                <i class="fas fa-user-check"></i>
+                            </button>
+                        </div>
+                        <span class="validation-warning" id="examinerNameWarning"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="mobileNo">Mobile Number:</label>
+                        <input type="tel" id="mobileNo" name="mobileNo" pattern="[0-9]{10}" required maxlength="10" title="Please enter a valid 10-digit mobile number">
+                        <span class="validation-warning" id="mobileNoWarning"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="panCard">PAN Card Number (Optional):</label>
+                        <input type="text" id="panCard" name="panCard" maxlength="10" placeholder="ABCDE1234F">
+                        <span class="validation-warning" id="panCardWarning"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group checkbox-group">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" id="documentAttached" name="documentAttached">
+                            <label class="custom-control-label" for="documentAttached">Original Bill/RC Book with True Copy Attached</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="studentCount">No. of Students:</label>
+                        <input type="number" id="studentCount" name="studentCount" required min="0">
+                        <span class="validation-warning" id="studentCountWarning"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="taAmount">Amount of TA:</label>
+                        <input type="number" id="taAmount" name="taAmount" step="0.01" required>
+                        <span class="validation-warning" id="taAmountWarning"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="daAmount">Amount of DA:</label>
+                        <input type="number" id="daAmount" name="daAmount" step="0.01" required>
+                        <span class="validation-warning" id="daAmountWarning"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="honorarium">Amount of Honorarium:</label>
+                        <input type="number" id="honorarium" name="honorarium" step="0.01" required>
+                        <span class="validation-warning" id="honorariumWarning"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2>Bank Details</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bankName">Bank Name:</label>
+                        <div class="input-with-icon">
+                            <input type="text" id="bankName" name="bankName" required>
+                            <button type="button" id="editBankDetails" class="icon-button" title="Edit Bank Details" style="display: none;">
+                                <i class="fas fa-pencil-alt"></i>
+                            </button>
+                        </div>
+                        <span class="validation-warning" id="bankNameWarning"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bankBranch">Name of Branch:</label>
+                        <input type="text" id="bankBranch" name="bankBranch" required>
+                        <span class="validation-warning" id="bankBranchWarning"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bankBranchCode">Branch Code:</label>
+                        <input type="text" id="bankBranchCode" name="bankBranchCode" required>
+                        <span class="validation-warning" id="bankBranchCodeWarning"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="accountNo">Account No:</label>
+                        <input type="text" id="accountNo" name="accountNo" required minlength="9" maxlength="18">
+                        <span class="validation-warning" id="accountNoWarning"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ifscCode">IFSC Code:</label>
+                        <input type="text" id="ifscCode" name="ifscCode" required maxlength="11" placeholder="ABCD0123456">
+                        <span class="validation-warning" id="ifscCodeWarning"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="billAmount">Bill Amount:</label>
+                        <input type="number" id="billAmount" name="billAmount" step="0.01" readonly required>
+                        <span class="validation-warning" id="billAmountWarning"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit">Submit</button>
+                <button type="reset">Reset</button>
+            </div>
+        </form>
+    </div>
+    <div id="examinerModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h3>Select Examiner</h3>
+            <div id="examinerDetailsList" class="examiner-list"></div>
+        </div>
+    </div>
+    <script src="./config.js"></script>
+    <script src="./script.js"></script>
+
+    <!-- Modal for bank details selection -->
+    <div id="bankDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Existing Bank Details</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="search-container">
+                    <input type="text" id="bankSearchInput" placeholder="Search by name or bank...">
+                </div>
+                <div class="bank-details-list">
+                    <!-- Bank details will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Examiner Details Modal -->
+    <div id="examinerDetailsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Select Existing Examiner</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="search-box">
+                    <input type="text" id="examinerSearchInput" placeholder="Search examiner...">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+                <div class="examiner-details-list">
+                    <div class="loading-message" style="display: none;">Loading examiner details...</div>
+                    <div class="error-message" style="display: none;"></div>
+                    <div class="no-data-message" style="display: none;">No examiners found</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Changes</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>You have made changes to the bank details. Do you want to:</p>
+                <div class="confirmation-buttons">
+                    <button id="updateExisting" class="primary-button">Update Existing Record</button>
+                    <button id="createNew" class="secondary-button">Create New Record</button>
+                    <button id="cancel" class="tertiary-button">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
