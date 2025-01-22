@@ -183,60 +183,90 @@ document.addEventListener('DOMContentLoaded', () => {
     function processData(data) {
         if (!data || data.length === 0) return [];
 
-        // Sort by date
-        data.sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
+        // Define examiner type order
+        const examinerTypeOrder = {
+            'External': 1,
+            'Internal': 2,
+            'Lab Assistant': 3,
+            'Peon': 4
+        };
 
-        // Separate external examiners
-        const externalExaminers = data.filter(item => item.examinerType === 'External');
-        const internalStaff = data.filter(item => ['Internal', 'Lab Assistant', 'Peon'].includes(item.examinerType));
-
-        // Group internal staff by name and sum their amounts
-        const internalGroups = internalStaff.reduce((groups, item) => {
-            const key = `${item.examinerName}-${item.bankDetailId?.accountNo || ''}`;
-            if (!groups[key]) {
-                groups[key] = {
-                    examinerName: item.examinerName,
-                    bankDetails: item.bankDetailId,
-                    totalAmount: 0, totalRecords: 0,
-                    examDates: new Set(),
-                    examinerType: item.examinerType
-                };
+        // First, process internal staff by combining repeated entries
+        const internalStaffMap = new Map();
+        
+        data.forEach(item => {
+            if (item.examinerType !== 'External') {
+                const key = `${item.examinerType}-${item.examinerName}-${item.bankDetailId?.accountNo || ''}`;
+                if (!internalStaffMap.has(key)) {
+                    internalStaffMap.set(key, {
+                        amount: item.billAmount,
+                        ifscCode: item.bankDetailId?.ifscCode || '',
+                        accountNo: item.bankDetailId?.accountNo || '',
+                        fixedCol1: '10',
+                        examinerName: item.examinerName,
+                        fixedCol2: 'Bhavnagar',
+                        fixedCol3: 'NEFT',
+                        fixedCol4: 'GEC',
+                        examDate: item.examDate,
+                        examinerType: item.examinerType,
+                        totalRecords: 1,
+                        dates: [item.examDate]
+                    });
+                } else {
+                    const existing = internalStaffMap.get(key);
+                    existing.amount += item.billAmount;
+                    existing.totalRecords += 1;
+                    existing.dates.push(item.examDate);
+                    // Keep the earliest date
+                    existing.examDate = new Date(Math.min(...existing.dates.map(d => new Date(d)))).toISOString();
+                }
             }
-            groups[key].totalAmount += item.billAmount;
-            groups[key].totalRecords += 1;
-            groups[key].examDates.add(item.examDate);
+        });
+
+        // Group data by examiner type
+        const groupedData = data.reduce((groups, item) => {
+            if (!groups[item.examinerType]) {
+                groups[item.examinerType] = [];
+            }
+
+            if (item.examinerType === 'External') {
+                // External examiners are not combined
+                groups[item.examinerType].push({
+                    amount: item.billAmount,
+                    ifscCode: item.bankDetailId?.ifscCode || '',
+                    accountNo: item.bankDetailId?.accountNo || '',
+                    fixedCol1: '10',
+                    examinerName: item.examinerName,
+                    fixedCol2: 'Bhavnagar',
+                    fixedCol3: 'NEFT',
+                    fixedCol4: 'GEC',
+                    examDate: item.examDate,
+                    examinerType: item.examinerType,
+                    totalRecords: 1
+                });
+            }
             return groups;
         }, {});
 
-        // Convert grouped data to array format
-        return [
-            ...externalExaminers.map(item => ({
-                amount: item.billAmount,
-                ifscCode: item.bankDetailId?.ifscCode || '',
-                accountNo: item.bankDetailId?.accountNo || '',
-                fixedCol1: '10',
-                examinerName: item.examinerName,
-                fixedCol2: 'Bhavnagar',
-                fixedCol3: 'NEFT',
-                fixedCol4: 'GEC',
-                examDate: item.examDate,
-                examinerType: 'External',
-                totalRecords: 1
-            })),
-            ...Object.values(internalGroups).map(item => ({
-                amount: item.totalAmount,
-                ifscCode: item.bankDetails?.ifscCode || '',
-                accountNo: item.bankDetails?.accountNo || '',
-                fixedCol1: '10',
-                examinerName: item.examinerName,
-                fixedCol2: 'Bhavnagar',
-                fixedCol3: 'NEFT',
-                fixedCol4: 'GEC',
-                examDate: Array.from(item.examDates).sort().join(', '),
-                examinerType: item.examinerType,
-                totalRecords: item.totalRecords
-            }))
-        ];
+        // Add processed internal staff to their respective groups
+        internalStaffMap.forEach((item) => {
+            if (!groupedData[item.examinerType]) {
+                groupedData[item.examinerType] = [];
+            }
+            groupedData[item.examinerType].push(item);
+        });
+
+        // Sort each group by date and combine all groups
+        let processedData = [];
+        Object.entries(groupedData)
+            .sort(([typeA], [typeB]) => examinerTypeOrder[typeA] - examinerTypeOrder[typeB])
+            .forEach(([type, items]) => {
+                // Sort by date within each group
+                const sortedItems = items.sort((a, b) => new Date(a.examDate) - new Date(b.examDate));
+                processedData = processedData.concat(sortedItems);
+            });
+
+        return processedData;
     }
 
     // Display data in table
@@ -256,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${item.fixedCol2}</td>
                 <td>${item.fixedCol3}</td>
                 <td>${item.fixedCol4}</td>
-                <td>${formatDate(item.examDate)}</td>
                 <td>${item.examinerType}</td>
                 <td>${item.totalRecords}</td>
             `;
@@ -294,7 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 'Location': item.fixedCol2,
                 'Payment Mode': item.fixedCol3,
                 'College': item.fixedCol4,
-                'Exam Date': formatExcelDate(item.examDate),
                 'Examiner Type': item.examinerType,
                 'Total Records': item.totalRecords
             };
@@ -313,7 +341,6 @@ document.addEventListener('DOMContentLoaded', () => {
             { wch: 15 }, // Fixed Col 2
             { wch: 10 }, // Fixed Col 3
             { wch: 10 }, // Fixed Col 4
-            { wch: 15 }, // Exam Date
             { wch: 15 }, // Examiner Type
             { wch: 12 }  // Total Records
         ];
