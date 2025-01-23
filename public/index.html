@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Viva Examination Details - Government Engineering College Bhavnagar</title>
+    <title>Viva Examination Details</title>
     <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -29,11 +29,8 @@
 </div>
 
     <div class="container">
-        <div class="college-header">
-            <h1>Government Engineering College Bhavnagar</h1>
-        </div>
         <div class="header-nav">
-            <h2 class="page-title">Viva Examination Details</h2>
+            <h1>Viva Examination Details</h1>
             <nav>
                 <a href="daily-sheet.html" class="nav-link">
                     <i class="fas fa-table"></i> View Daily Sheet
@@ -52,7 +49,7 @@
                 <div class="form-group">
                     <label for="examName">Exam Name:</label>
                     <div class="input-with-icon">
-                        <input type="text" id="examName" readonly>
+                        <input type="text" id="examName" value="Winter - 2024" readonly>
                         <i class="fas fa-edit edit-icon" id="editExamName"></i>
                     </div>
                 </div>
@@ -129,48 +126,33 @@
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="mobileNo">Mobile Number:</label>
-                        <input type="tel" id="mobileNo" name="mobileNo" pattern="[0-9]{10}" required maxlength="10" title="Please enter a valid 10-digit mobile number">
-                        <span class="validation-warning" id="mobileNoWarning"></span>
-                    </div>
-
-                    <div class="form-group">
                         <label for="panCard">PAN Card Number (Optional):</label>
                         <input type="text" id="panCard" name="panCard" maxlength="10" placeholder="ABCDE1234F">
                         <span class="validation-warning" id="panCardWarning"></span>
                     </div>
-                </div>
 
-                <div class="form-row">
-                    <div class="form-group checkbox-group">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="documentAttached" name="documentAttached">
-                            <label class="custom-control-label" for="documentAttached">Original Bill/RC Book with True Copy Attached</label>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-row">
                     <div class="form-group">
                         <label for="studentCount">No. of Students:</label>
                         <input type="number" id="studentCount" name="studentCount" required min="0">
                         <span class="validation-warning" id="studentCountWarning"></span>
                     </div>
+                </div>
 
+                <div class="form-row">
                     <div class="form-group">
                         <label for="taAmount">Amount of TA:</label>
                         <input type="number" id="taAmount" name="taAmount" step="0.01" required>
                         <span class="validation-warning" id="taAmountWarning"></span>
                     </div>
-                </div>
 
-                <div class="form-row">
                     <div class="form-group">
                         <label for="daAmount">Amount of DA:</label>
                         <input type="number" id="daAmount" name="daAmount" step="0.01" required>
                         <span class="validation-warning" id="daAmountWarning"></span>
                     </div>
+                </div>
 
+                <div class="form-row">
                     <div class="form-group">
                         <label for="honorarium">Amount of Honorarium:</label>
                         <input type="number" id="honorarium" name="honorarium" step="0.01" required>
@@ -221,6 +203,14 @@
                         <span class="validation-warning" id="ifscCodeWarning"></span>
                     </div>
 
+                    <div class="form-group">
+                        <label for="mobileNo">Mobile No:</label>
+                        <input type="tel" id="mobileNo" name="mobileNo" pattern="[0-9]{10}" required maxlength="10">
+                        <span class="validation-warning" id="mobileNoWarning"></span>
+                    </div>
+                </div>
+
+                <div class="form-row">
                     <div class="form-group">
                         <label for="billAmount">Bill Amount:</label>
                         <input type="number" id="billAmount" name="billAmount" step="0.01" readonly required>
