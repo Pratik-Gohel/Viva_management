@@ -47,8 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const subjectCodeInput = document.getElementById('subjectCode');
     const examinerTypeSelect = document.getElementById('examinerType');
     const examinerNameInput = document.getElementById('examinerName');
-    const panCardInput = document.getElementById('panCard');
     const mobileNoInput = document.getElementById('mobileNo');
+    const panCardInput = document.getElementById('panCard');
     const numberOfStudentsInput = document.getElementById('studentCount');
     const taAmountInput = document.getElementById('taAmount');
     const daAmountInput = document.getElementById('daAmount');
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const ifscCodeInput = document.getElementById('ifscCode');
     const editBankDetailsBtn = document.getElementById('editBankDetails');
     const examinerModal = document.getElementById('examinerModal');
-    const examinerDetailsList = document.getElementById('examinerDetailsList');
+    const examinerDetailsList = document.getElementById('examinerList');
     const loadExaminerBtn = document.getElementById('loadExaminerDetails');
 
     let selectedBankDetailId = null;
@@ -101,11 +101,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    function showLoadingInList() {
+        const examinerList = document.getElementById('examinerList');
+        if (examinerList) {
+            examinerList.innerHTML = `
+                <div class="loading-message">
+                    <div class="loading-spinner"></div>
+                    <p>Loading examiners...</p>
+                </div>
+            `;
+        }
+        const examinerModal = document.getElementById('examinerModal');
+        if (examinerModal) {
+            examinerModal.style.display = 'block';
+        }
+    }
+
+    function hideLoadingInList() {
+        const examinerList = document.getElementById('examinerList');
+        if (examinerList) {
+            const loadingMessage = examinerList.querySelector('.loading-message');
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
+        }
+    }
+
     async function loadExaminerDetails() {
         const branch = branchSelect.value;
         const examinerType = examinerTypeSelect.value;
-        
-        
 
         console.log('Loading examiners with:', { branch, examinerType });
 
@@ -132,81 +156,107 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!data || data.length === 0) {
                 showToast('Examiner details not found', 'info');
                 hideLoadingInList();
-                examinerModal.style.display = 'none';
+                const examinerModal = document.getElementById('examinerModal');
+                if (examinerModal) {
+                    examinerModal.style.display = 'none';
+                }
                 return;
             }
 
             // Display examiner list
-            examinerDetailsList.innerHTML = data.map((examiner, index) => `
-                <div class="examiner-item" data-index="${index}">
-                    <div class="examiner-name">${examiner.examinerName} - ${examiner.examinerType}</div>
-                    <div class="examiner-details">
-                        ${examiner.panCard ? `${examiner.panCard},` : ''}
-                        ${examiner.mobileNo ? `${examiner.mobileNo}` : ''}
+            const examinerList = document.getElementById('examinerList');
+            if (examinerList) {
+                examinerList.innerHTML = data.map((examiner, index) => `
+                    <div class="examiner-item" data-index="${index}">
+                        <div class="examiner-name">${examiner.examinerName} - 
+                            ${examiner.mobileNo ? `${examiner.mobileNo}` : ''}, 
+                            ${examiner.panCard ? `${examiner.panCard},` : ''}
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
 
-            // Add click handlers for examiner items
-            examinerDetailsList.querySelectorAll('.examiner-item').forEach((item, index) => {
-                item.addEventListener('click', () => {
-                    const selectedExaminer = data[index];
-                    console.log('Selected examiner:', selectedExaminer);
-                    
-                    // Clear all fields first
-                    clearExaminerFields();
-                    
-                    // Fill in examiner details
-                    examinerNameInput.value = selectedExaminer.examinerName;
-                    if (selectedExaminer.mobileNo) {
-                        mobileNoInput.value = selectedExaminer.mobileNo;
-                    }
-                    if (selectedExaminer.panCard) {
-                        panCardInput.value = selectedExaminer.panCard;
-                    }
-                    
-                    // Fill in bank details if available
-                    if (selectedExaminer.bankDetailId) {
-                        // Store original bank details for comparison
-                        originalBankDetails = {
-                            bankName: selectedExaminer.bankName || '',
-                            branchName: selectedExaminer.branchName || '',
-                            branchCode: selectedExaminer.branchCode || '',
-                            accountNo: selectedExaminer.accountNo || '',
-                            ifscCode: selectedExaminer.ifscCode || ''
-                        };
-
-                        // Fill in the fields
-                        bankNameInput.value = originalBankDetails.bankName;
-                        bankBranchInput.value = originalBankDetails.branchName;
-                        bankBranchCodeInput.value = originalBankDetails.branchCode;
-                        accountNoInput.value = originalBankDetails.accountNo;
-                        ifscCodeInput.value = originalBankDetails.ifscCode;
-
-                        selectedBankDetailId = selectedExaminer.bankDetailId;
-                        editBankDetailsBtn.style.display = 'inline-block';
+                // Add click handlers for examiner items
+                examinerList.querySelectorAll('.examiner-item').forEach((item, index) => {
+                    item.addEventListener('click', () => {
+                        const selectedExaminer = data[index];
+                        console.log('Selected examiner:', selectedExaminer);
                         
-                        // Disable bank detail fields by default
-                        toggleBankFieldsDisabled(true);
-                    } else {
-                        // Clear bank details if not available
-                        clearBankDetails();
-                        editBankDetailsBtn.style.display = 'none';
-                        toggleBankFieldsDisabled(false);
-                    }
-                    
-                    // Close the modal
-                    examinerModal.style.display = 'none';
-                });
-            });
+                        // Clear all fields first
+                        clearExaminerFields();
+                        
+                        // Fill in examiner details
+                        const examinerNameInput = document.getElementById('examinerName');
+                        const mobileNoInput = document.getElementById('mobileNo');
+                        const panCardInput = document.getElementById('panCard');
+                        
+                        if (examinerNameInput) examinerNameInput.value = selectedExaminer.examinerName;
+                        if (mobileNoInput && selectedExaminer.mobileNo) mobileNoInput.value = selectedExaminer.mobileNo;
+                        if (panCardInput && selectedExaminer.panCard) panCardInput.value = selectedExaminer.panCard;
+                        
+                        // Fill in bank details if available
+                        if (selectedExaminer.bankDetailId) {
+                            // Store original bank details for comparison
+                            originalBankDetails = {
+                                bankName: selectedExaminer.bankName || '',
+                                branchName: selectedExaminer.branchName || '',
+                                branchCode: selectedExaminer.branchCode || '',
+                                accountNo: selectedExaminer.accountNo || '',
+                                ifscCode: selectedExaminer.ifscCode || ''
+                            };
 
-            examinerModal.style.display = 'block';
+                            const bankNameInput = document.getElementById('bankName');
+                            const bankBranchInput = document.getElementById('bankBranch');
+                            const bankBranchCodeInput = document.getElementById('bankBranchCode');
+                            const accountNoInput = document.getElementById('accountNo');
+                            const ifscCodeInput = document.getElementById('ifscCode');
+                            const editBankDetailsBtn = document.getElementById('editBankDetails');
+
+                            // Fill in the fields
+                            if (bankNameInput) bankNameInput.value = originalBankDetails.bankName;
+                            if (bankBranchInput) bankBranchInput.value = originalBankDetails.branchName;
+                            if (bankBranchCodeInput) bankBranchCodeInput.value = originalBankDetails.branchCode;
+                            if (accountNoInput) accountNoInput.value = originalBankDetails.accountNo;
+                            if (ifscCodeInput) ifscCodeInput.value = originalBankDetails.ifscCode;
+
+                            selectedBankDetailId = selectedExaminer.bankDetailId;
+                            if (editBankDetailsBtn) {
+                                editBankDetailsBtn.style.display = 'inline-block';
+                            }
+                            
+                            // Disable bank detail fields by default
+                            toggleBankFieldsDisabled(true);
+                        } else {
+                            // Clear bank details if not available
+                            clearBankDetails();
+                            const editBankDetailsBtn = document.getElementById('editBankDetails');
+                            if (editBankDetailsBtn) {
+                                editBankDetailsBtn.style.display = 'none';
+                            }
+                            toggleBankFieldsDisabled(false);
+                        }
+                        
+                        // Close the modal
+                        const examinerModal = document.getElementById('examinerModal');
+                        if (examinerModal) {
+                            examinerModal.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            const examinerModal = document.getElementById('examinerModal');
+            if (examinerModal) {
+                examinerModal.style.display = 'block';
+            }
             hideLoadingInList();
         } catch (error) {
             console.error('Error loading examiner details:', error);
             showToast('Error loading examiner details', 'error');
             hideLoadingInList();
-            examinerModal.style.display = 'none';
+            const examinerModal = document.getElementById('examinerModal');
+            if (examinerModal) {
+                examinerModal.style.display = 'none';
+            }
         }
     }
 
@@ -272,52 +322,64 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update the examiner selection handler
     const examinerSelect = document.getElementById('examinerName');
     examinerSelect.addEventListener('change', async function() {
-        //const examinerName = document.getElementById('examinerName').value;
-        //console.log("name", examinerName);
-        if (!this.value) {
-            clearExaminerFields();
+        const examinerName = document.getElementById('examinerName').value;
+        console.log('Selected examiner name:', examinerName);
+        
+        if (!examinerName) {
+            clearBankDetails();
+            editBankDetailsBtn.style.display = 'none';
+            toggleBankFieldsDisabled(false);
             return;
         }
-        
+
         try {
-            const { name, bankId } = JSON.parse(this.value);
-            const examiner = await fetchExaminerDetails(name);
-            
-            if (bankId) {
-                // If a specific bank was selected, pre-select it
-                const selectedBank = examiner.bankDetails.find(b => b._id === bankId);
-                if (selectedBank) {
-                    document.getElementById('bankName').value = selectedBank.bankName;
-                    document.getElementById('bankBranch').value = selectedBank.branchName;
-                    document.getElementById('bankBranchCode').value = selectedBank.branchCode || '';
-                    document.getElementById('accountNo').value = selectedBank.accountNo;
-                    document.getElementById('ifscCode').value = selectedBank.ifscCode;
-                    selectedBankDetailId = selectedBank._id;
+            const response = await fetch(`${API_BASE_URL}/api/examiners/${encodeURIComponent(examinerName)}`);
+            const data = await response.json();
+
+            if (response.ok && data) {
+                // Fill in examiner details
+                if (data.panCard) panCardInput.value = data.panCard;
+                if (data.mobileNo) mobileNoInput.value = data.mobileNo;
+
+                // Fill in bank details if available
+                if (data.bankDetailId) {
+                    originalBankDetails = {
+                        bankName: data.bankDetailId.bankName || '',
+                        branchName: data.bankDetailId.branchName || '',
+                        branchCode: data.bankDetailId.branchCode || '',
+                        accountNo: data.bankDetailId.accountNo || '',
+                        ifscCode: data.bankDetailId.ifscCode || ''
+                    };
+
+                    bankNameInput.value = originalBankDetails.bankName;
+                    bankBranchInput.value = originalBankDetails.branchName;
+                    bankBranchCodeInput.value = originalBankDetails.branchCode;
+                    accountNoInput.value = originalBankDetails.accountNo;
+                    ifscCodeInput.value = originalBankDetails.ifscCode;
+
+                    selectedBankDetailId = data.bankDetailId._id;
+                    editBankDetailsBtn.style.display = 'inline-block';
+                    toggleBankFieldsDisabled(true);
+                } else {
+                    // Clear bank details for new entry
+                    clearBankDetails();
+                    editBankDetailsBtn.style.display = 'none';
+                    toggleBankFieldsDisabled(false);
                 }
+            } else {
+                // Handle new examiner entry
+                clearBankDetails();
+                editBankDetailsBtn.style.display = 'none';
+                toggleBankFieldsDisabled(false);
             }
-            
-            // Fill examiner details
-            document.getElementById('panCard').value = examiner.panCard || '';
-            document.getElementById('mobileNo').value = examiner.mobileNo || '';
-            
-            // Disable bank fields after auto-fill
-            toggleBankFieldsDisabled(true);
-            
-            // Store original bank details for comparison
-            originalBankDetails = {
-                bankName: document.getElementById('bankName').value,
-                bankBranch: document.getElementById('bankBranch').value,
-                bankBranchCode: document.getElementById('bankBranchCode').value,
-                accountNo: document.getElementById('accountNo').value,
-                ifscCode: document.getElementById('ifscCode').value
-            };
         } catch (error) {
-            const examinerName = this.value; //document.getElementById('examinerName').value;
-            console.log("name", examinerName);
-            console.error('Error loading examiner details:', error);
-            showToast('Error loading examiner details', 'error');
-            clearExaminerFields();
-            document.getElementById('examinerName').value = examinerName;
+            console.error('Error fetching examiner details:', error);
+            showToast('Error fetching examiner details', 'error');
+            
+            // Enable bank fields for new entry
+            clearBankDetails();
+            editBankDetailsBtn.style.display = 'none';
+            toggleBankFieldsDisabled(false);
         }
     });
 
@@ -327,23 +389,6 @@ document.addEventListener('DOMContentLoaded', function() {
             throw new Error('Failed to fetch examiner details');
         }
         return response.json();
-    }
-
-    function showLoadingInList() {
-        examinerDetailsList.innerHTML = `
-            <div class="loading-message">
-                <div class="loading-spinner"></div>
-                <p>Loading examiners...</p>
-            </div>
-        `;
-        examinerModal.style.display = 'block';
-    }
-
-    function hideLoadingInList() {
-        const loadingMessage = examinerDetailsList.querySelector('.loading-message');
-        if (loadingMessage) {
-            loadingMessage.remove();
-        }
     }
 
     function clearBankDetails() {
@@ -624,7 +669,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            // Create options for each examiner-bank combination
+            // Create options for each bank account
             Object.values(examinerGroups).forEach(group => {
                 if (group.bankAccounts.length > 0) {
                     // Add an option for each bank account
@@ -654,7 +699,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Handle examiner selection change
+    // Handle examiner selection
     examinerSelect.addEventListener('change', async function() {
         const examinerName = document.getElementById('examinerName').value;
         console.log('name' );
@@ -687,9 +732,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 resetAutoFilledFields();
             }
         } catch (error) {
+            const examinerName = this.value; //document.getElementById('examinerName').value;
+            console.log("name", examinerName);
             console.error('Error loading bank details:', error);
             showToast('Error loading bank details', 'error');
             resetAutoFilledFields();
+            document.getElementById('examinerName').value = examinerName;
         }
     });
 
@@ -721,9 +769,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function loadCurrentExamName() {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/current-exam-name`);
+            const response = await fetch('/api/current-exam-name');
             const data = await response.json();
-            if (data.examName) {
+            if (data && data.examName) {
                 examNameInput.value = data.examName;
             }
         } catch (error) {
@@ -734,7 +782,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function saveExamName(examName) {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/current-exam-name`, {
+            const response = await fetch('/api/current-exam-name', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -816,4 +864,58 @@ document.addEventListener('DOMContentLoaded', function() {
             showToast('Failed to fetch examiner details', 'error');
         }
     });
+
+    // Search functionality for examiner modal
+    const examinerSearch = document.getElementById('examinerSearch');
+    if (examinerSearch) {
+        examinerSearch.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const examinerItems = document.querySelectorAll('.examiner-item');
+            
+            examinerItems.forEach(item => {
+                const examinerName = item.textContent.toLowerCase();
+                if (examinerName.includes(searchTerm)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+    }
+
+    // Update populateExaminerList function to use the new structure
+    async function populateExaminerList() {
+        const examinerList = document.getElementById('examinerList');
+        examinerList.innerHTML = ''; // Clear existing list
+        
+        try {
+            showLoadingInList();
+            const response = await fetch(`${API_BASE_URL}/api/examiners`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch examiners');
+            }
+            
+            const examiners = await response.json();
+            hideLoadingInList();
+            
+            examiners.forEach(examiner => {
+                const examinerItem = document.createElement('div');
+                examinerItem.className = 'examiner-item';
+                examinerItem.textContent = examiner.name;
+                
+                examinerItem.addEventListener('click', () => {
+                    document.getElementById('examinerName').value = examiner.name;
+                    document.getElementById('examinerModal').style.display = 'none';
+                    // Trigger the examiner details fetch
+                    fetchExaminerDetails(examiner.name);
+                });
+                
+                examinerList.appendChild(examinerItem);
+            });
+        } catch (error) {
+            hideLoadingInList();
+            showToast('Failed to load examiners list', 'error');
+            console.error('Error:', error);
+        }
+    }
 });

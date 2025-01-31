@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Viva Examination Details - Government Engineering College Bhavnagar</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;,">
     <link rel="stylesheet" href="./styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
@@ -40,6 +41,9 @@
                 </a>
                 <a href="viva-payment.html" class="nav-link">
                     <i class="fas fa-money-bill"></i> Viva Payment Details
+                </a>
+                <a href="viva-cover-sheet.html" class="nav-link">
+                    <i class="fas fa-file-alt"></i> Viva Cover Sheet
                 </a>
                 <!-- <a href="update-examiner.html" class="nav-link">
                     <i class="fas fa-user-edit"></i> Update Examiner Details
@@ -237,19 +241,23 @@
     </div>
     <div id="examinerModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h3>Select Examiner</h3>
-            <div id="examinerDetailsList" class="examiner-list"></div>
+            <div class="modal-header">
+                <h3>Select Examiner</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="search-container">
+                <input type="text" id="examinerSearch" class="search-input" placeholder="Search examiner...">
+            </div>
+            <div class="examiner-list" id="examinerList">
+                <!-- Examiner items will be populated dynamically -->
+            </div>
         </div>
     </div>
-    <script src="./config.js"></script>
-    <script src="./script.js"></script>
-
-    <!-- Modal for bank details selection -->
+    
     <div id="bankDetailsModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>Select Existing Bank Details</h2>
+                <h3>Select Existing Bank Details</h3>
                 <span class="close">&times;</span>
             </div>
             <div class="modal-body">
@@ -301,5 +309,7 @@
             </div>
         </div>
     </div>
+    <script src="./config.js"></script>
+    <script src="./script.js"></script>
 </body>
 </html>
