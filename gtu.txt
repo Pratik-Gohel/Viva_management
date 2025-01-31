@@ -147,6 +147,14 @@ analyse script.js and resolve issues
     at HTMLFormElement.handleSubmit (script.js:332:13)
 3)examinaer list is not automatically closing after selecting the examiner
 
+
+
+
+
+Bill Amount is total of Amounts Of TA, Amounts Of DA, Amounts Of Honorarium in main html page
+
+
+
 Add new page name "Viva Payment Details Sheet" in main html page, i can download filtered data in excel format:
 filter field is "examName", "Branch (All or Separate)", "Date (From Saved Entries)", "Examiner Type (All or Separate)"
 
@@ -156,11 +164,191 @@ flow -> select exam name -> load branch available as per exam name -> load dates
 after that if entries found then display datewise in assending order. 
 
 then download available in excel format in following field sequence.
-1)Amount
+1)Amount 
 2)IFSC Number
 3)Account Number
 4)Fixed column having value "10"
 5)Name of the examiner
 6)Fixed column having value "Bhavnagar"
-6)Fixed column having value "GEC"
+7)Fixed column having value "NEFT"
+8)Fixed column having value "GEC"
 
+keep exernal examinaer entry saperate but internal , lab assistant and Peon entry will be sum of total amount in single enrty
+
+
+Keep Date format in Excel download sheet in mm-dd-yyyy.
+Enable "Export to Excel" button after load all entries using "Apply Filter" button.
+If after "Apply Filter", there will be no data then keep "Export to Excel" button in disable.
+
+
+
+1)keep viva payment html webpage design same as  Daily-sheet.html
+2)getting error "http://localhost:3000/api/examination-details/exam-names 404 (Not Found)"
+3)Error loading exam names: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
+
+in viva payment html page , keep exernal examinaer entry saperate but internal , lab assistant and Peon entry will be sum of total amount in single entry per person name with its bank details 
+
+
+Add new html page name "Update examiner detail", in which i can find examiner from branch and examiner type same as main html page. After that selection for specific examiner i can update name, pan card, and bank details.
+if any examiner having multimple bank details associted with it, than I can also select specific bank and update its details. Also I can able to delete bank details if multiple bank details found.
+
+
+1) add update-examiner.html link in main html page.
+2)error in update-examiner.html is "Failed to load resource: the server responded with a status of 404 (Not Found)" 
+3) in main html page, change display list of examiner with bank name like "{person name} - {Bank name and Account number}".
+
+
+
+1)error in update-examiner.html is "contentScripts16.js:1 
+ GET http://localhost:3000/api/examiners/abc 500 (Internal Server Error)"
+
+2)in main html page, display list title should be "{person name} - {Bank name and Account number}".
+if any examiner have multiple bank account than add entry in list with saprate bank account like
+i.e "ABC - SBI (1234567890)", "ABC - HDFC (1234567890)" etc.
+
+1) in update-examiner.html page display fetched bank account details after selection for specific examiner to update it
+2) in main html page, examiner name field, in a select examiner dialogbox,set display item tile name like "{person name} - {Bank name and Account number}" 
+3) there is unneccessory warning while selecing branch in examiner type.
+
+if i want to upload this web service project to redner.com for live hosting, then which changes need to done for make mongodb, nodejs and js connectivity
+
+
+
+I want to make this project to run on local server in port 3000 like old version and also, want to run in live on render.com without 3000 which i changed now.
+so, make changes in whole project in javascript to run project locally as well as live deployed without any error.
+create one variable in .env file to decide weather project will work on local or live.
+ 
+
+
+Update index.html page with following changes only
+1) Do not remove any other field or change attribute of other field, other than i asked to do.
+2) Only Shift Mobile Field to Examiner Section before Pan Card Field. Save mobile detail with examiner detail and retireve when required like pan card detail.
+3) Also add new checkbox with title "Original Bill/RC Book with True Copy Attached" at the end of examiner section and save its detail with examiner detail as YES/NO. Check box of "Original Bill/RC Book with True Copy Attached" will be optional. if it will ticked then seve YES otherwise No
+4) Branch code auto-select when select branch:
+   for EC->11, IT-> 16, CE-> 7, Mech->19, Civil->6, ICT->32
+5) Auto set current date in Exam Date Field
+
+
+In index.html page, if will update "Exam Name" field, but i will back to current value after refresh.
+I want this value keep same when it will changed to.
+Value will be save when i will click on save value icon in "Exam Name" field when editing
+
+
+
+
+
+I found following issue in index.html page
+1) I cant edit Exam Name Field
+2) Branch code auto-select when select branch:
+   for EC->11, IT-> 16, CE-> 7, Mech->19, Civil->6, ICT->32
+3) Auto set current date in Exam Date Field
+4) Check box of "Original Bill/RC Book with True Copy Attached" will be optional. if it will ticked then seve YES otherwise No
+
+
+Also, remove "Examiner Name", "Mobile Number", "Pan Card Number" and Checkbox of "Original Bill/RC Book with True Copy Attached" from viva-payment.html page
+
+
+
+In "daily-sheet.html" page, "Exam Name" field need to be display all available unique examName.
+Then after when select "Exam Name" then display branches which assiciated with selected "Exam Name". Also, add 1st option of "All Branch"
+Then after when select "Branch" then load date associated with "Branch" and "Exam Name". Also, add 1st option of "All Dates"
+Then load examnier types as per dates. Also, add 1st option of "All Examiner".
+
+
+Load Data related to selected option only
+
+
+I want following changes
+1) display all unique value (non repeatable) examName in "Exam Name"
+2) filter data as per examName selected in "Exam Name". Currently, its not filter as per "Exam Name"
+
+
+In index.html page, when i will select examiner from, retrive mobile number also and set in "Mobile" field
+
+
+
+do not change examName in previous mongoDB entry while save new entry to mongoDB
+
+
+In "viva-payment.html" and "viva-payment.js" do the following changes, while doing changes keep the below field and associated logic as it is do not make changes on that fields, just update the said only
+1)Amount 
+2)IFSC Number
+3)Account Number
+4)--- "10"
+5)Name of the examiner
+6)Location "Bhavnagar"
+7)Payment Mode "NEFT"
+8)College "GEC" 
+9)Examiner Type 
+10) Total Records
+ 
+Now the changes Changes only are: 
+
+1) remove dates in table display only in html page only. 
+2) Display all enrty in following sequence, 
+   1st-> group all entries w.r.t examiner type and keep sequesnce in External, internal, lab assistant, and then Peon
+   2nd-> within external examiner group, arrange all entry as per date in assending order.
+
+
+now update the total amount of "Internal" , "lab assistant" and "peon" if they are repeated. also upadate number repeated in total record 
+
+
+
+
+
+
+
+
+everything is ok. now do not change anything keep all the fields and project work as it is. 
+Update all pages theme and css more beautiful and according to website content.
+
+
+everything is ok. now do not change anything keep all the fields and project work as it is. 
+Update Checkbox of "Original Bill/RC Book with True Copy Attached" if it will ticked then seve YES otherwise instead of No use "--"
+
+
+
+
+1) Analyze and understand the whole project fisrt.
+
+
+
+In "viva-payment.html" download excel containing following filed only
+1)Amount 
+2)IFSC Number
+3)Account Number
+4)--- "10"
+5)Name of the examiner
+6)Location "Bhavnagar"
+7)Payment Mode "NEFT"
+8)College "GEC" 
+9)Examiner Type 
+10) Total Records
+
+if the examiner details not found than consider it as new entry for the bank details. also in examiner details "examiner name" field, the entered details is disappering. so consider the new details to be entered in "examiner details",if the "examiner name" not found. 
+
+1) Add new page name "Viva Cover Sheet" in index.html, which will be like "viva-payment.html" and "Daily-sheet.html" i can download filtered data in excel format:
+filter field is "examName", "Branch (All or Separate)", "Date (From Saved Entries)", "Examiner Type (External)"
+2) "Viva Cover Sheet" page link each field with previous field input
+flow -> select exam name -> load branch available as per exam name -> load dates as per branch -> load examnier types as per dates.
+
+after that if entries found then display datewise in assending order. 
+
+3) then download available in excel format in following field sequence.
+	1)Semester 
+	2)Branch code
+	3)Subject code
+	4)Fixed column having value "10"
+	5)Name of the examiner
+	6)Examiner Name
+	7)No. of Students
+	8)No. of Marksheet Cover "1"
+	9)No. of Remuneration Bill "1"
+
+while generating excel file displaying filtered data "Viva Cover Sheet"  and  in keep date format "dd-mm-yyyy" 
+in "Viva Cover Sheet" page link put the "apply filter" button and "Download Excel" button along with its functionality just like "viva-payment.html" and "daily-sheet.html"
+
+in "Viva Cover Sheet" 
+1) in date list menu add "all dates" option.
+2) in "Viva Cover Sheet" instead of "search" button put "apply filter" button
+2) After selecting "Exam Name:", "Branch:", "Date:", "Examiner Type:" , enable "apply filter" and "Download Excel" button.

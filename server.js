@@ -518,83 +518,51 @@ app.get('/api/examiner-details', async (req, res) => {
         const { branch, examinerType } = req.query;
         console.log('Received query:', { branch, examinerType });
 
-        if (!branch || !examinerType) {
-            return res.status(400).json({
-                success: false,
-                message: 'Branch and examiner type are required'
-            });
-        }
+        // Find examiner details
+        const examiners = await ExaminationDetails.find({
+            branch,
+            examinerType
+        })
+        .populate('bankDetailId')
+        .select('examinerName panCard mobileNo bankDetailId')
+        .distinct('examinerName');
 
-        // Find unique examiner details
-        const examiners = await ExaminationDetails.aggregate([
-            {
-                $match: {
-                    branch: branch,
-                    examinerType: examinerType
-                }
-            },
-            {
-                $sort: {
-                    updatedAt: -1
-                }
-            },
-            {
-                $group: {
-                    _id: {
-                        examinerName: '$examinerName',
-                        examinerType: '$examinerType'
-                    },
-                    bankDetailId: { $first: '$bankDetailId' },
-                    panCard: { $first: '$panCard' },
-                    mobileNo: { $first: '$mobileNo' },
-                    lastUpdated: { $first: '$updatedAt' }
-                }
-            },
-            {
-                $lookup: {
-                    from: 'Bank_details',
-                    localField: 'bankDetailId',
-                    foreignField: '_id',
-                    as: 'bankDetail'
-                }
-            },
-            {
-                $unwind: {
-                    path: '$bankDetail',
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $project: {
-                    _id: 0,
-                    examinerName: '$_id.examinerName',
-                    examinerType: '$_id.examinerType',
-                    bankDetailId: 1,
-                    panCard: 1,
-                    bankName: '$bankDetail.bankName',
-                    branchName: '$bankDetail.branchName',
-                    branchCode: '$bankDetail.branchCode',
-                    accountNo: '$bankDetail.accountNo',
-                    ifscCode: '$bankDetail.ifscCode',
-                    mobileNo: 1,
-                    lastUpdated: 1
-                }
-            },
-            {
-                $sort: {
-                    lastUpdated: -1,
-                    examinerName: 1
+        // Get unique examiner details
+        const uniqueExaminers = [];
+        const seenExaminers = new Set();
+
+        for (const examinerName of examiners) {
+            if (!seenExaminers.has(examinerName)) {
+                seenExaminers.add(examinerName);
+                const examiner = await ExaminationDetails.findOne({
+                    examinerName,
+                    branch,
+                    examinerType
+                }).populate('bankDetailId');
+                
+                if (examiner) {
+                    uniqueExaminers.push({
+                        examinerName: examiner.examinerName,
+                        examinerType: examiner.examinerType,
+                        panCard: examiner.panCard,
+                        mobileNo: examiner.mobileNo,
+                        bankDetailId: examiner.bankDetailId?._id,
+                        bankName: examiner.bankDetailId?.bankName,
+                        branchName: examiner.bankDetailId?.branchName,
+                        branchCode: examiner.bankDetailId?.branchCode,
+                        accountNo: examiner.bankDetailId?.accountNo,
+                        ifscCode: examiner.bankDetailId?.ifscCode
+                    });
                 }
             }
-        ]);
+        }
 
-        console.log('Found examiners:', examiners);
-        res.json(examiners);
+        res.json(uniqueExaminers);
     } catch (error) {
         console.error('Error fetching examiner details:', error);
         res.status(500).json({
             success: false,
-            message: 'Failed to fetch examiner details'
+            message: error.message || 'Error fetching examiner details'
         });
     }
 });
@@ -779,6 +747,12 @@ app.get('/api/examiners', async (req, res) => {
                 }
             },
             {
+                $unwind: {
+                    path: '$bankDetails',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
                 $group: {
                     _id: '$examinerName',
                     examinerName: { $first: '$examinerName' },
@@ -879,6 +853,50 @@ app.post('/api/current-exam-name', async (req, res) => {
     } catch (error) {
         console.error('Error saving exam name:', error);
         res.status(500).json({ error: 'Failed to save exam name' });
+    }
+});
+
+// API endpoint for viva cover sheet
+app.get('/api/viva-cover-sheet', async (req, res) => {
+    try {
+        const { examName, branch, examDate, examinerType } = req.query;
+        
+        // Build query based on parameters
+        const query = { examName };
+        
+        if (branch && branch !== 'ALL') {
+            query.branch = branch;
+        }
+        
+        if (examDate && examDate !== 'ALL') {
+            // Convert the date string to a Date object for comparison
+            const searchDate = new Date(examDate);
+            searchDate.setHours(0, 0, 0, 0);
+            const nextDay = new Date(searchDate);
+            nextDay.setDate(nextDay.getDate() + 1);
+            
+            query.examDate = {
+                $gte: searchDate,
+                $lt: nextDay
+            };
+        }
+        
+        if (examinerType && examinerType !== 'ALL') {
+            query.examinerType = examinerType;
+        }
+
+        // Fetch the data
+        const data = await ExaminationDetails.find(query)
+            .select('examDate semester branch subjectCode examinerType examinerName numberOfStudents')
+            .sort({ examDate: 1 });
+
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching viva cover sheet data:', error);
+        res.status(500).json({
+            success: false,
+            message: error.message || 'Error fetching viva cover sheet data'
+        });
     }
 });
 
