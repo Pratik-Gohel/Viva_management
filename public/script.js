@@ -8,7 +8,14 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Handle login form submission
+    const loginModal = document.getElementById('loginModal');
     const loginForm = document.getElementById('loginForm');
+    loginModal.addEventListener('click', function (event) {
+        event.stopPropagation(); // Prevents the click from bubbling up
+    });
+    document.body.addEventListener('click', function (event) {
+        // Do nothing - clicking outside does NOT close the modal anymore
+    });
     loginForm.addEventListener('submit', async function(event) {
         event.preventDefault();
         

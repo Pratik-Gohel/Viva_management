@@ -247,6 +247,7 @@ tr:hover {
     overflow-y: auto;
     box-shadow: var(--shadow-lg);
     animation: modalSlideIn 0.3s ease;
+    display: block; 
 }
 
 @keyframes modalSlideIn {
