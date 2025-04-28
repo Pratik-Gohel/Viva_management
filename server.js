@@ -828,10 +828,14 @@ app.post('/api/login', (req, res) => {
 // Get current exam name from file
 app.get('/api/current-exam-name', async (req, res) => {
     try {
-        const data = await fs.readFile(EXAM_NAME_FILE, 'utf8');
-        data2 = data.split("\n")
-        res.json({ examName: data2[0], temp: data2[1] });
-        console.log({ examName: data2[0], temp: data2[1] });
+        // const data = await fs.readFile(EXAM_NAME_FILE, 'utf8');
+        // data2 = data.split("\n")
+
+        // Read exam name from environment variable
+        const examName = process.env.EXAM_NAME || "";
+        const temp = "temp";
+        res.json({ examName, temp });
+        console.log({ examName, temp });
     } catch (error) {
         console.error('Error reading exam name:', error);
         res.status(500).json({ error: 'Failed to read exam name' });
